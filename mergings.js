@@ -1,7 +1,7 @@
 var jimp = require('jimp');
 
 async function doMerge(receivedMessage, img0, img1, img2, img3, img4, img5, img6, img7, img8, img9, name) {
-    var IMG_PATH = "C:\\Users\\Lipe2\\OneDrive\\Desktop\\mybot\\images\\";
+    var IMG_PATH = "C:\\Users\\Lipe2\\OneDrive\\Documentos\\GitHub\\potatobot\\images\\";
 
     //an array of all images we're using. MAKE SURE THEIR SIZES MATCH
     var images = [IMG_PATH + img0, IMG_PATH + img1.img, IMG_PATH + img2.img, IMG_PATH + img3.img, IMG_PATH + img4.img, IMG_PATH + img5.img, IMG_PATH + img6.img, IMG_PATH + img7.img, IMG_PATH + img8.img, IMG_PATH + img9.img]
@@ -44,7 +44,7 @@ async function doMerge(receivedMessage, img0, img1, img2, img3, img4, img5, img6
 
 }
 
-async function doMerge2(receivedMessage, img0, img1, img2, img3, img4, img5, img6, img7, img8, img9, name) {
+/*async function doMerge2(receivedMessage, img0, img1, img2, img3, img4, img5, img6, img7, img8, img9, name) {
     var IMG_PATH = "C:\\Users\\Lipe2\\OneDrive\\Desktop\\mybot\\images\\";
 
     //an array of all images we're using. MAKE SURE THEIR SIZES MATCH
@@ -86,6 +86,6 @@ async function doMerge2(receivedMessage, img0, img1, img2, img3, img4, img5, img
 
     return p
 
-}
+}*/
 
 module.exports = { doMerge }
