@@ -40,9 +40,9 @@ client.on('ready', () => {
             {tilename: "c2", x: "c", y: "2", posx: -120, posy: 40, tilewet: false, wettime: 0, fertilizer: 0, fertilizertime: 0, planted: "plant", planttick: 0, plantstate: 0, plantfert: 0, iscollectable: false},
             {tilename: "c3", x: "c", y: "3", posx: -12, posy: 96, tilewet: false, wettime: 0, fertilizer: 0, fertilizertime: 0, planted: "plant", planttick: 0, plantstate: 0, plantfert: 0, iscollectable: false}
         ], inventory: {
-            watertank: {water: 0, max: 450},
-            fertilizebag: {red: 0, blue: 0, green: 0, purple: 0, max: 18},
-            seedbag: {potato: 0, max: 18}
+            watertank: {water: 450, max: 450},
+            fertilizebag: {red: 6, blue: 4, green: 4, purple: 4, max: 18},
+            seedbag: {potato: 18, max: 18}
         }}))
     })
 
@@ -134,17 +134,30 @@ client.on('message', (receivedMessage) => {
 
     function waterCommand(receivedMessage, arguments, author){
         if(arguments[0] == "all"){
+            if(spend("water", "water", 25 * 9, author) == false){
+                receivedMessage.channel.send("insufficient water supply" + " " + "(" + players.find(s => s.name === author).inventory.watertank.water + " / " + players.find(s => s.name === author).inventory.watertank.max + ")")
+                return
+            }
             players.find(s => s.name === author).tiles.forEach((tile) => waterTile(tile.tilename, 10))
             showCommand(receivedMessage, arguments, author)
         }
 
         if(arguments[0] != "all" && arguments[0] == "a1" ||arguments[0] == "a2" ||arguments[0] == "a3" ||arguments[0] == "b1" ||arguments[0] == "b2" ||arguments[0] == "b3" ||arguments[0] == "c1" ||arguments[0] == "c2" ||arguments[0] == "c3"){
+            if(spend("water", "water", 25, author) == false){
+                receivedMessage.channel.send("insufficient water supply" + " " + "(" + players.find(s => s.name === author).inventory.watertank.water + " / " + players.find(s => s.name === author).inventory.watertank.max + ")")
+                return
+            }
             waterTile(arguments[0], 10)
             console.table(players.find(String => String.name === author).tiles)
             showCommand(receivedMessage, arguments, author)
         }
         
         if(arguments[0] == "row"){
+            if(spend("water", "water", 25 * 3, author) == false){
+                receivedMessage.channel.send("insufficient water supply" + " " + "(" + players.find(s => s.name === author).inventory.watertank.water + " / " + players.find(s => s.name === author).inventory.watertank.max + ")")
+                return
+            }
+
             players.find(s => s.name === author).tiles.forEach((tile) => {
                 if(tile.x == arguments[1] || tile.y == arguments[1]){
                     waterTile(tile.tilename, 10)
@@ -159,6 +172,7 @@ client.on('message', (receivedMessage) => {
     }
 
     function fertilizeCommand(receivedMessage, arguments, author){
+        if(arguments[0] != "blue" && arguments[0] != "red" && arguments[0] != "green" && arguments[0] != "purple")
         var color = 0
         if(arguments[0] == "blue"){
             color = 1
@@ -174,15 +188,31 @@ client.on('message', (receivedMessage) => {
         }
 
         if(arguments[1] == "all"){
+            if(spend("fertilizer", arguments[0], 9, author) == false){
+                receivedMessage.channel.send("insufficient fertilizer supply" + " " + "(" + players.find(s => s.name === author).inventory.fertilizebag[arguments[0]] + " / " + players.find(s => s.name === author).inventory.fertilizebag.max + ")")
+                return
+            }
+
             players.find(s => s.name === author).tiles.forEach((tile) => fertilizeTile(tile.tilename, 10))
             showCommand(receivedMessage, arguments, author)
 
         }
         if(arguments[1] == "a1" || arguments[1] == "a2" || arguments[1] == "a3" || arguments[1] == "b1" || arguments[1] == "b2" || arguments[1] == "b3" || arguments[1] == "c1" || arguments[1] == "c2" || arguments[1] == "c3"){
+            if(spend("fertilizer", arguments[0], 9, author) == false){
+                receivedMessage.channel.send("insufficient fertilizer supply" + " " + "(" + players.find(s => s.name === author).inventory.fertilizebag[arguments[0]] + " / " + players.find(s => s.name === author).inventory.fertilizebag.max + ")")
+                return
+            }
+
             fertilizeTile(arguments[1], 10)
             showCommand(receivedMessage, arguments, author)
         }
         if(arguments[1] == "row"){
+            if(arguments[2] != "blue" && arguments[2] != "red" && arguments[2] != "green" && arguments[2] != "purple")
+
+            if(spend("fertilizer", arguments[0], 9, author) == false){
+                receivedMessage.channel.send("insufficient fertilizer supply" + " " + "(" + players.find(s => s.name === author).inventory.fertilizebag[arguments[0]] + " / " + players.find(s => s.name === author).inventory.fertilizebag.max + ")")
+                return
+            }
 
             players.find(s => s.name === author).tiles.forEach((tile) => {
                 if(tile.x == arguments[2] || tile.y == arguments[2]){
@@ -200,16 +230,31 @@ client.on('message', (receivedMessage) => {
     function plantCommand(receivedMessage, arguments, author){
         if(typeof(plants.find(s => s.name === arguments[0])) != "undefined"){
             if(arguments[1] == "all"){
+                if(spend("seed", arguments[0], 9, author) == false){
+                    receivedMessage.channel.send("insufficient seed supply" + " " + "(" + players.find(s => s.name === author).inventory.seedbag[arguments[0]] + " / " + players.find(s => s.name === author).inventory.seedbag.max + ")")
+                    return    
+                }
+
                 players.find(s => s.name === author).tiles.forEach((tile) => {
                     plantTile(tile.tilename, arguments[0])
                 })
                 showCommand(receivedMessage, arguments, author)
             }
             if(arguments[1] == "a1" || arguments[1] == "a2" || arguments[1] == "a3" || arguments[1] == "b1" || arguments[1] == "b2" || arguments[1] == "b3" || arguments[1] == "c1" || arguments[1] == "c2" || arguments[1] == "c3"){
+                if(spend("seed", arguments[0], 1, author) == false){
+                    receivedMessage.channel.send("insufficient seed supply" + " " + "(" + players.find(s => s.name === author).inventory.seedbag[arguments[0]] + " / " + players.find(s => s.name === author).inventory.seedbag.max + ")")
+                    return    
+                }
+                
                 plantTile(arguments[1], arguments[0])
                 showCommand(receivedMessage, arguments, author)
             }
             if(arguments[1] == "row"){
+                if(spend("seed", arguments[0], 3, author) == false){
+                    receivedMessage.channel.send("insufficient seed supply" + " " + "(" + players.find(s => s.name === author).inventory.seedbag[arguments[0]] + " / " + players.find(s => s.name === author).inventory.seedbag.max + ")")
+                    return    
+                }
+
                 players.find(s => s.name === author).tiles.forEach((tile) => {
                     if(tile.x == arguments[2] || tile.y == arguments[2]){
                         plantTile(tile.tilename, arguments[0])
@@ -329,6 +374,27 @@ client.on('message', (receivedMessage) => {
                 players.find(s => s.name === author).tiles.find(s => s.tilename === tilepos).plantfert = 0
                 players.find(s => s.name === author).tiles.find(s => s.tilename === tilepos).iscollectable = false
             }
+        }
+    }
+
+    function spend(productSector, product, amount, author){
+        if(productSector == "water"){
+            if(players.find(s => s.name === author).inventory.watertank.water < amount){
+                console.table(players.find(String => String.name === author).tiles)
+                return false
+            }
+            players.find(s => s.name === author).inventory.watertank.water -= amount
+            return true
+        }
+        if(productSector == "fertilizer"){
+            if(players.find(s => s.name === author).inventory.fertilizebag[product] < amount){return false}
+            players.find(s => s.name === author).inventory.fertilizebag[product] -= amount
+            return true
+        }
+        if(productSector == "seed"){
+            if(players.find(s => s.name === author).inventory.seedbag[product] < amount){return false}
+            players.find(s => s.name === author).inventory.seedbag[product] -= amount
+            return true
         }
     }
 })
