@@ -3,6 +3,8 @@ const client = new Discord.Client()
 
 const libMerge = require('./mergings.js')
 
+
+
 let plants = [
     {name: "potato", plantfert: 2, states: 4, tick: 10, images:[{number: 1, img: "semente batata.png"}, {number: 2, img: "batata fase1.png"}, {number: 3, img: "batata fase2.png"}, {number: 4, img: "batata fase3.png"}]}
 ]
@@ -20,7 +22,24 @@ let players = [{name: "name", tiles: [
     watertank: {water: 0, max: 450},
     fertilizebag: {red: 0, blue: 0, green: 0, purple: 0, max: 18},
     seedbag: {potato: 0, max: 18}
-}
+}, itemBag:[
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0},
+    {id: 0}
+]
 }]
 
 client.on('ready', () => {
@@ -198,7 +217,7 @@ client.on('message', (receivedMessage) => {
 
         }
         if(arguments[1] == "a1" || arguments[1] == "a2" || arguments[1] == "a3" || arguments[1] == "b1" || arguments[1] == "b2" || arguments[1] == "b3" || arguments[1] == "c1" || arguments[1] == "c2" || arguments[1] == "c3"){
-            if(spend("fertilizer", arguments[0], 9, author) == false){
+            if(spend("fertilizer", arguments[0], 1, author) == false){
                 receivedMessage.channel.send("insufficient fertilizer supply" + " " + "(" + players.find(s => s.name === author).inventory.fertilizebag[arguments[0]] + " / " + players.find(s => s.name === author).inventory.fertilizebag.max + ")")
                 return
             }
@@ -209,7 +228,7 @@ client.on('message', (receivedMessage) => {
         if(arguments[1] == "row"){
             if(arguments[2] != "blue" && arguments[2] != "red" && arguments[2] != "green" && arguments[2] != "purple")
 
-            if(spend("fertilizer", arguments[0], 9, author) == false){
+            if(spend("fertilizer", arguments[0], 3, author) == false){
                 receivedMessage.channel.send("insufficient fertilizer supply" + " " + "(" + players.find(s => s.name === author).inventory.fertilizebag[arguments[0]] + " / " + players.find(s => s.name === author).inventory.fertilizebag.max + ")")
                 return
             }
@@ -282,15 +301,27 @@ client.on('message', (receivedMessage) => {
             receivedMessage.channel.send("Loading...")
         }
         
-        function mixinv(receivedMessage, author, time){
 
-        }
         function mix(receivedMessage, author, time){
 
             var values = players.find(s => s.name === author).tiles
+            if(time == 1){
+                libMerge.doMerge(receivedMessage, "dirt.png", 
+                {name: "tile.tilename", img: "no.png", posx: 1, posy: 1}, 
+                {name: "tile.tilename", img: "no.png", posx: 1, posy: 1}, 
+                {name: "tile.tilename", img: "no.png", posx: 1, posy: 1}, 
+                {name: "tile.tilename", img: "no.png", posx: 1, posy: 1}, 
+                {name: "tile.tilename", img: "no.png", posx: 1, posy: 1}, 
+                {name: "tile.tilename", img: "no.png", posx: 1, posy: 1}, 
+                {name: "tile.tilename", img: "no.png", posx: 1, posy: 1}, 
+                {name: "tile.tilename", img: "no.png", posx: 1, posy: 1}, 
+                {name: "tile.tilename", img: "no.png", posx: 1, posy: 1}, 
+                    receivedMessage + "merge.png")
+            }
+
             var imgvalues = []
             var mainimg = "dirt.png"
-            if(time > 1) mainimg = "merge.png"
+            if(time > 1) mainimg = receivedMessage + "merge.png"
             values.forEach((tile) =>{
                 if(time == 1){
                     if(tile.tilewet == true){
@@ -338,9 +369,18 @@ client.on('message', (receivedMessage) => {
             imgvalues.find(tile => tile.name === "c1"), 
             imgvalues.find(tile => tile.name === "c2"), 
             imgvalues.find(tile => tile.name === "c3"), 
-            "merge.png").then((res) => {
+            receivedMessage + "merge.png").then((res) => {
                 if(time == 3){
-                    receivedMessage.channel.send(receivedMessage.author.toString() + "'s farm", {files: ["./images/merge.png"]})
+                    receivedMessage.channel.send(receivedMessage.author.toString() + "'s farm", {files: ["./images/" + receivedMessage + "merge.png"]}).then(() => {
+                        const fs = require('fs')
+                        const path = "./images/" + receivedMessage + "merge.png"
+                        try {
+                            fs.unlinkSync(path)
+                            //file removed
+                        } catch(err) {
+                            console.error(err)
+                        }   
+                    })
                 }else{
                     mix(receivedMessage, author, time + 1)
                 }
@@ -399,4 +439,4 @@ client.on('message', (receivedMessage) => {
     }
 })
 
-client.login("Nzc2NDA4MTcxMDg2MzQ4MzE5.X60cdA.BJiE_YNEiuxx5N8g0yDxOJ6YqhU")
+client.login("Nzc2NDA4MTcxMDg2MzQ4MzE5.X60cdA.O0dgEkZXWv31sQJPpkGZbkyhKdY")
