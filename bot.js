@@ -6,7 +6,8 @@ const libMerge = require('./mergings.js')
 
 
 let plants = [
-    {name: "potato", plantfert: 2, states: 4, tick: 10, images:[{number: 1, img: "semente batata.png"}, {number: 2, img: "batata fase1.png"}, {number: 3, img: "batata fase2.png"}, {number: 4, img: "batata fase3.png"}]}
+    {name: "potato", plantfert: 2, states: 4, tick: 10, images:[{number: 1, img: "semente batata.png"}, {number: 2, img: "batata fase1.png"}, {number: 3, img: "batata fase2.png"}, {number: 4, img: "batata fase3.png"}]},
+    {name: "beetroot", plantfert: 2, states: 3, tick: 6, images:[{number: 1, img: "semente beterraba.png"}, {number: 2, img: "beterraba fase1.png"}, {number: 3, img: "beterraba fase2.png"}]}
 ]
 let players = [{name: "name", tiles: [
     {tilename: "a1", tilewet: false, wettime: 0, fertilizer: 0, fertilizertime: 0, planted: "plant", planttick: 0, plantstate: 0, iscollectable: false},
@@ -21,7 +22,7 @@ let players = [{name: "name", tiles: [
 ], inventory: {
     watertank: {water: 0, max: 450},
     fertilizebag: {red: 0, blue: 0, green: 0, purple: 0, max: 18},
-    seedbag: {potato: 0, max: 18}
+    seedbag: {potato: 0, beetroot: 0, max: 18}
 }, itemBag:[
     {id: 0},
     {id: 0},
@@ -61,7 +62,7 @@ client.on('ready', () => {
         ], inventory: {
             watertank: {water: 450, max: 450},
             fertilizebag: {red: 6, blue: 4, green: 4, purple: 4, max: 18},
-            seedbag: {potato: 18, max: 18}
+            seedbag: {potato: 9, beetroot: 9, max: 18}
         }}))
     })
 
@@ -191,7 +192,7 @@ client.on('message', (receivedMessage) => {
     }
 
     function fertilizeCommand(receivedMessage, arguments, author){
-        if(arguments[0] != "blue" && arguments[0] != "red" && arguments[0] != "green" && arguments[0] != "purple")
+        if(arguments[0] != "blue" && arguments[0] != "red" && arguments[0] != "green" && arguments[0] != "purple"){return}
         var color = 0
         if(arguments[0] == "blue"){
             color = 1
@@ -439,4 +440,4 @@ client.on('message', (receivedMessage) => {
     }
 })
 
-client.login("Nzc2NDA4MTcxMDg2MzQ4MzE5.X60cdA.O0dgEkZXWv31sQJPpkGZbkyhKdY")
+client.login("Nzc2NDA4MTcxMDg2MzQ4MzE5.X60cdA.U3MrPzzgp6v0W4AXsRUhCBqrwxQ")
